@@ -39,24 +39,28 @@ class MyHomePage extends StatelessWidget {
           child: Obx(
             () => Column(
               children: [
-                for (int i = 0; i < controller.selectedValues.length; i++)
-                  dropDownCard(i),
+                /*for (int i = 0; i < controller.selectedValues.length; i++)
+                  dropDownCard(i),*/
+                for(int i = 0; i< controller._items.length;i++)
+                  field(i),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     MaterialButton(
                       onPressed: () {
-                        var selectedValue = "Status";
-                        controller.selectedValues.add(selectedValue);
+                        // var selectedValue = "Status";
+                        // controller.selectedValues.add(selectedValue);
+                        controller._items.add(TextEditingController());
                       },
                       child: Text("Add DropDown"),
                     ),
                     MaterialButton(
                       onPressed: () {
                         controller.onSavedPressed();
-                        controller.selectedValues.clear();
+                        controller._items.clear();
+                        /*controller.selectedValues.clear();
                         controller.selectedValues
-                            .add(controller.selectedValue.value);
+                            .add(controller.selectedValue.value);*/
                       },
                       child: const Text("Save"),
                     ),
@@ -81,7 +85,7 @@ class MyHomePage extends StatelessWidget {
     );
   }
 
-  Widget dropDownCard(int index) {
+  /*Widget dropDownCard(int index) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Card(
@@ -120,6 +124,31 @@ class MyHomePage extends StatelessWidget {
         ),
       ),
     );
+  }*/
+
+  Widget field(int index) {
+    return Row(
+      children: [
+        SizedBox(
+          width: 250,
+          child: TextField(
+            controller: controller._items[index],
+            decoration: const InputDecoration(
+              hintText: "Please Enter Name",
+            )
+          ),
+        ),
+        IconButton(
+          onPressed: () {
+            controller._items.removeAt(index);
+          },
+          icon: const Icon(
+            Icons.cancel_outlined,
+            color: Colors.purple,
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -131,6 +160,8 @@ class MyHomeController extends GetxController {
   List<String> statusList = ["Status", "Todo", "active"];
 
   var savedList = <String>[].obs;
+
+  final List<TextEditingController> _items = <TextEditingController>[].obs;
 
   List<DropdownMenuItem<String>> get dropdownItems {
     List<DropdownMenuItem<String>> menuItems = [
@@ -148,6 +179,9 @@ class MyHomeController extends GetxController {
   }
 
   onSavedPressed() {
-    savedList.addAll(selectedValues.value);
+    // savedList.addAll(selectedValues.value);
+    for(int i=0;i<_items.length;i++){
+      savedList.add(_items[i].value.text);
+    }
   }
 }
